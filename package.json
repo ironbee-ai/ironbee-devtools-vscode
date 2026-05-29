@@ -1,0 +1,356 @@
+{
+  "name": "ironbee-devtools-vscode",
+  "displayName": "IronBee DevTools",
+  "description": "VSCode Extension for the IronBee DevTools - Verification and Intelligence Layer for AI Coding Agents",
+  "version": "0.1.0",
+  "publisher": "ironbee-ai",
+  "author": {
+    "name": "IronBee",
+    "url": "https://github.com/ironbee-ai"
+  },
+  "license": "Elastic-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ironbee-ai/ironbee-devtools-vscode"
+  },
+  "homepage": "https://github.com/ironbee-ai/ironbee-devtools-vscode",
+  "bugs": {
+    "url": "https://github.com/ironbee-ai/ironbee-devtools-vscode/issues"
+  },
+  "engines": {
+    "vscode": "^1.101.0"
+  },
+  "icon": "images/icon.png",
+  "categories": [
+    "Testing",
+    "Debuggers",
+    "Other"
+  ],
+  "keywords": [
+    "ironbee",
+    "mcp",
+    "model-context-protocol",
+    "devtools",
+    "verification",
+    "ai",
+    "agent",
+    "copilot",
+    "cursor",
+    "browser",
+    "playwright",
+    "automation",
+    "testing",
+    "debugging",
+    "node",
+    "backend",
+    "api",
+    "graphql",
+    "grpc",
+    "database"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ironbeeDevTools.toggleExtension",
+        "title": "IronBee DevTools: Toggle Enable/Disable",
+        "icon": "$(plug)"
+      },
+      {
+        "command": "ironbeeDevTools.openSettings",
+        "title": "IronBee DevTools: Open Settings",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "ironbeeDevTools.installBrowsers",
+        "title": "IronBee DevTools: Install Playwright Browsers...",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "ironbeeDevTools.restartServer",
+        "title": "IronBee DevTools: Restart Server",
+        "icon": "$(debug-restart)"
+      },
+      {
+        "command": "ironbeeDevTools.showVisualizer",
+        "title": "IronBee DevTools: Show Visualizer",
+        "icon": "$(play)"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "type": "webview",
+          "id": "ironbeeDevTools.settingsView",
+          "name": "IronBee DevTools",
+          "icon": "$(globe)",
+          "contextualTitle": "IronBee DevTools Settings"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "IronBee DevTools",
+      "properties": {
+        "ironbeeDevTools.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable the IronBee DevTools extension"
+        },
+        "ironbeeDevTools.telemetry.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Allow sending anonymous install/uninstall telemetry. When false, also disables telemetry for the uninstall hook."
+        },
+        "ironbeeDevTools.browser.headless": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run browser in headless mode (no visible window)"
+        },
+        "ironbeeDevTools.browser.persistent": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable persistent browser context (keeps cookies, localStorage, etc.)"
+        },
+        "ironbeeDevTools.browser.userDataDir": {
+          "type": "string",
+          "default": "",
+          "description": "Directory for persistent browser user data"
+        },
+        "ironbeeDevTools.browser.useSystemBrowser": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use system-installed browser instead of bundled Playwright browser"
+        },
+        "ironbeeDevTools.browser.executablePath": {
+          "type": "string",
+          "default": "",
+          "description": "Custom path to browser executable"
+        },
+        "ironbeeDevTools.browser.locale": {
+          "type": "string",
+          "default": "",
+          "description": "Browser locale (e.g., en-US, tr-TR)"
+        },
+        "ironbeeDevTools.browser.cdp.enable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable Chrome DevTools Protocol (CDP) attach mode (Chromium only)"
+        },
+        "ironbeeDevTools.browser.cdp.endpointUrl": {
+          "type": "string",
+          "default": "",
+          "description": "CDP endpoint URL to attach (http://host:port or ws://...)"
+        },
+        "ironbeeDevTools.browser.cdp.openInspect": {
+          "type": "boolean",
+          "default": true,
+          "description": "When loopback CDP attach fails and Chrome is running, open chrome://inspect/#remote-debugging"
+        },
+        "ironbeeDevTools.browser.consoleMessagesBufferSize": {
+          "type": "number",
+          "default": 1000,
+          "description": "Max console messages to buffer in browser (default: 1000)"
+        },
+        "ironbeeDevTools.browser.httpRequestsBufferSize": {
+          "type": "number",
+          "default": 1000,
+          "description": "Max HTTP requests to buffer in browser (default: 1000)"
+        },
+        "ironbeeDevTools.install.chromium": {
+          "type": "boolean",
+          "default": true,
+          "description": "Download Chromium, headless shell, and ffmpeg (Playwright) into the default cache when the extension activates."
+        },
+        "ironbeeDevTools.install.firefox": {
+          "type": "boolean",
+          "default": false,
+          "description": "Download Firefox (Playwright) into the default cache on activate."
+        },
+        "ironbeeDevTools.install.webkit": {
+          "type": "boolean",
+          "default": false,
+          "description": "Download WebKit (Playwright) into the default cache on activate."
+        },
+        "ironbeeDevTools.platform.browser.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable the Browser platform: Playwright-powered browser automation, DevTools inspection, and visual debugging. Registered as the 'ironbee-dt-browser' MCP server."
+        },
+        "ironbeeDevTools.platform.browser.availableToolDomains": {
+          "type": "string",
+          "default": "",
+          "description": "Comma-separated Browser tool domains to enable (e.g. navigation,interaction,a11y). Empty = all. Domains: a11y, content, debug, figma, interaction, navigation, o11y, react, run, scenario, stub, sync."
+        },
+        "ironbeeDevTools.platform.node.enable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable the Node platform: non-blocking debugging of Node.js processes via the Inspector Protocol (tracepoints, logpoints, exceptionpoints, watches). Registered as the 'ironbee-dt-node' MCP server."
+        },
+        "ironbeeDevTools.platform.node.availableToolDomains": {
+          "type": "string",
+          "default": "",
+          "description": "Comma-separated Node tool domains to enable. Empty = all. Domains: debug, run."
+        },
+        "ironbeeDevTools.platform.backend.enable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable the Backend platform: runtime-agnostic backend verification (HTTP/gRPC/GraphQL/WebSocket) plus log capture (file/docker/kubernetes) and database verification (Postgres/MySQL/SQLite). Registered as the 'ironbee-dt-backend' MCP server."
+        },
+        "ironbeeDevTools.platform.backend.availableToolDomains": {
+          "type": "string",
+          "default": "",
+          "description": "Comma-separated Backend tool domains to enable. Empty = all. Domains: db, log, o11y, request, run."
+        },
+        "ironbeeDevTools.node.inspectorHost": {
+          "type": "string",
+          "default": "",
+          "description": "Inspector host for Node platform when MCP runs in Docker (e.g., host.docker.internal)"
+        },
+        "ironbeeDevTools.node.consoleMessagesBufferSize": {
+          "type": "number",
+          "default": 1000,
+          "description": "Max console messages to buffer in Node process (default: 1000)"
+        },
+        "ironbeeDevTools.opentelemetry.enable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable OpenTelemetry instrumentation in browser"
+        },
+        "ironbeeDevTools.opentelemetry.serviceName": {
+          "type": "string",
+          "default": "frontend",
+          "description": "OpenTelemetry service name"
+        },
+        "ironbeeDevTools.opentelemetry.serviceVersion": {
+          "type": "string",
+          "default": "",
+          "description": "OpenTelemetry service version"
+        },
+        "ironbeeDevTools.opentelemetry.assetsDir": {
+          "type": "string",
+          "default": "",
+          "description": "OpenTelemetry assets directory"
+        },
+        "ironbeeDevTools.opentelemetry.instrumentationUserInteractionEvents": {
+          "type": "string",
+          "default": "",
+          "description": "Comma-separated user interaction events to instrument (default: click). E.g. click,submit"
+        },
+        "ironbeeDevTools.opentelemetry.exporterType": {
+          "type": "string",
+          "default": "none",
+          "enum": [
+            "none",
+            "console",
+            "otlp/http"
+          ],
+          "enumDescriptions": [
+            "Disable tracing export",
+            "Export traces to console",
+            "Export traces via OTLP/HTTP"
+          ],
+          "description": "OpenTelemetry exporter type"
+        },
+        "ironbeeDevTools.opentelemetry.exporterUrl": {
+          "type": "string",
+          "default": "",
+          "description": "OpenTelemetry collector URL (e.g., http://localhost:4318)"
+        },
+        "ironbeeDevTools.opentelemetry.exporterHeaders": {
+          "type": "string",
+          "default": "",
+          "description": "OpenTelemetry HTTP headers (key=value,key=value format)"
+        },
+        "ironbeeDevTools.aws.region": {
+          "type": "string",
+          "default": "",
+          "description": "AWS region for Bedrock services"
+        },
+        "ironbeeDevTools.aws.profile": {
+          "type": "string",
+          "default": "",
+          "description": "AWS profile name for credentials"
+        },
+        "ironbeeDevTools.bedrock.enable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable Amazon Bedrock for AI-powered features"
+        },
+        "ironbeeDevTools.bedrock.imageModelId": {
+          "type": "string",
+          "default": "",
+          "description": "Amazon Bedrock model ID for image embeddings"
+        },
+        "ironbeeDevTools.bedrock.textModelId": {
+          "type": "string",
+          "default": "",
+          "description": "Amazon Bedrock model ID for text embeddings"
+        },
+        "ironbeeDevTools.bedrock.visionModelId": {
+          "type": "string",
+          "default": "",
+          "description": "Amazon Bedrock model ID for vision tasks"
+        },
+        "ironbeeDevTools.figma.accessToken": {
+          "type": "string",
+          "default": "",
+          "description": "Figma API access token for design comparison features"
+        },
+        "ironbeeDevTools.figma.apiBaseUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Figma API base URL (default: https://api.figma.com/v1)"
+        },
+        "ironbeeDevTools.toolOutputSchemaDisable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Omit tool output schema from MCP registration (can reduce token usage)"
+        },
+        "ironbeeDevTools.showVisualizer": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show Visualizer: Enabled/Disabled. Controls whether the visualizer UI and its WebSocket server are active."
+        },
+        "ironbeeDevTools.visualizer.wsPort": {
+          "type": "number",
+          "default": 3020,
+          "description": "WebSocket port for the visualizer event stream."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build:visualizer && npm run compile",
+    "build:visualizer": "cd visualizer && npm install && npm run build",
+    "compile": "tsc -p ./",
+    "build": "npm run build:visualizer && npm run compile",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "package": "vsce package",
+    "publish": "vsce publish",
+    "release:patch": "release-it --ci -VV",
+    "release:minor": "release-it minor --ci -VV",
+    "release:major": "release-it major --ci -VV"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.101.0",
+    "@types/ws": "^8.18.1",
+    "@typescript-eslint/eslint-plugin": "^8.26.1",
+    "@typescript-eslint/parser": "^8.26.1",
+    "@vscode/vsce": "^3.7.1",
+    "eslint": "^9.22.0",
+    "release-it": "^17.0.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@img/sharp-wasm32": "0.34.5",
+    "@ironbee-ai/devtools": "^0.10.2",
+    "ws": "^8.20.0"
+  }
+}

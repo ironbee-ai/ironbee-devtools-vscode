@@ -1,0 +1,69 @@
+name: Publish VS Code Extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_scale:
+        type: choice
+        description: "Version scale"
+        required: true
+        default: "patch"
+        options:
+          - patch
+          - minor
+          - major
+
+env:
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
+      - name: Configure Git User
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: https://registry.npmjs.org
+      - name: Install Dependencies
+        run: npm ci --omit=optional
+      - name: Lint Check
+        run: npm run lint
+      - name: Build Extension
+        run: npm run build
+      - name: Release (Version Bump + Tag + GitHub Release)
+        run: npm run release:${{ github.event.inputs.version_scale }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          NODE_DEBUG: release-it:*
+      - name: Publish to Open VSX Registry
+        uses: HaaLeo/publish-vscode-extension@v2
+        id: publishToOpenVSX
+        with:
+          pat: ${{ secrets.OPEN_VSX_TOKEN }}
+          skipDuplicate: true
+      # Disable Visual Studio Marketplace publish temporarily until account issue is resolved
+      # - name: Publish to Visual Studio Marketplace
+      #   uses: HaaLeo/publish-vscode-extension@v2
+      #   id: publishToVSMarketplace
+      #   with:
+      #     pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
+      #     skipDuplicate: true
+      #     registryUrl: https://marketplace.visualstudio.com
+      #     extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
+      - name: Upload VSIX Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ironbee-devtools-vscode.vsix
+          path: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
+          retention-days: 30

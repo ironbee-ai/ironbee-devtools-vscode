@@ -1,0 +1,9 @@
+dist/
+node_modules/
+*.vsix
+.vscode-test/
+.DS_Store
+*.log
+promo-video/
+.cursor/**
+.idea

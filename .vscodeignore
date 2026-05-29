@@ -1,0 +1,47 @@
+.vscode/**
+.vscode-test/**
+src/**
+.gitignore
+.yarnrc
+vsc-extension-quickstart.md
+.github/**
+.release-it.json
+.idea/**
+.claude/**
+AGENTS.md
+CLAUDE.md
+**/tsconfig.json
+eslint.config.js
+**/*.map
+**/*.ts
+!dist/**
+# Runtime does not need generated declaration files (smaller VSIX)
+dist/**/*.d.ts
+# Dev-only repo files (not required in marketplace / VSIX)
+package-lock.json
+# vsce packages production node_modules via `npm list --production`. Trim noise; keep *.node native binaries.
+node_modules/**/.bin/**
+node_modules/**/*.md
+node_modules/**/test/**
+node_modules/**/docs/**
+node_modules/**/CHANGELOG*
+node_modules/**/LICENSE*
+node_modules/**/examples/**
+
+# Universal VSIX: exclude native sharp/libvips prebuild variants.
+**/node_modules/@img/sharp-darwin-*/**
+**/node_modules/@img/sharp-win32-*/**
+**/node_modules/@img/sharp-linux-*/**
+**/node_modules/@img/sharp-libvips-*/**
+
+# Keep sharp core + wasm package in the VSIX.
+!**/node_modules/sharp/**
+!**/node_modules/@img/sharp-wasm32/**
+
+# Cursor hooks bridge script (installed to workspace .cursor/ on visualizer enable)
+!scripts/**
+
+# Visualizer UI: only the Vite-built output is needed at runtime.
+# Everything else (raw public/ assets, source, configs) is inlined into dist by Vite.
+visualizer/**
+!visualizer/dist/**
