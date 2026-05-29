@@ -2,7 +2,7 @@
   "name": "ironbee-devtools-vscode",
   "displayName": "IronBee DevTools",
   "description": "VSCode Extension for the IronBee DevTools - Verification and Intelligence Layer for AI Coding Agents",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "ironbee-ai",
   "author": {
     "name": "IronBee",
